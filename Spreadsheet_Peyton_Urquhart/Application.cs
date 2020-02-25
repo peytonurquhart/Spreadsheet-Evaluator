@@ -32,7 +32,6 @@ namespace Spreadsheet_Peyton_Urquhart
             for (int i = 65; i < (65 + 26); i++)
             {
                 char a = (char)i;
-
                 this.gridMain.Columns.Add(a.ToString(), a.ToString());
             }
 
