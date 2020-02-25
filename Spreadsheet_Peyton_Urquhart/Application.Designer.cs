@@ -28,12 +28,40 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.gridMain = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.gridMain)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // gridMain
+            // 
+            this.gridMain.AllowUserToAddRows = false;
+            this.gridMain.AllowUserToDeleteRows = false;
+            this.gridMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gridMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridMain.Location = new System.Drawing.Point(12, 12);
+            this.gridMain.Name = "gridMain";
+            this.gridMain.RowHeadersWidth = 60;
+            this.gridMain.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.gridMain.RowTemplate.Height = 33;
+            this.gridMain.Size = new System.Drawing.Size(700, 655);
+            this.gridMain.TabIndex = 0;
+            // 
+            // Application
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(724, 679);
+            this.Controls.Add(this.gridMain);
+            this.Name = "Application";
+            this.Text = "Spreadsheet_Peyton_Urquhart";
+            ((System.ComponentModel.ISupportInitialize)(this.gridMain)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.DataGridView gridMain;
     }
 }
 

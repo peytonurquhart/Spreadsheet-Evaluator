@@ -22,10 +22,26 @@ namespace Spreadsheet_Peyton_Urquhart
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Application"/> class.
+        /// Creates 26 columns (A - Z) and 50 rows (1 - 50).
         /// </summary>
         public Application()
         {
             this.InitializeComponent();
+
+            // Add 26 columns labeled A-Z
+            for (int i = 65; i < (65 + 26); i++)
+            {
+                char a = (char)i;
+
+                this.gridMain.Columns.Add(a.ToString(), a.ToString());
+            }
+
+            // Add 50 rows labeled 1 - 50
+            for (int i = 1; i < 51; i++)
+            {
+                this.gridMain.Rows.Add();
+                this.gridMain.Rows[i - 1].HeaderCell.Value = i.ToString();
+            }
         }
     }
 }
