@@ -115,7 +115,7 @@ namespace Spreadsheet_Tests
             }
 
             // The outside world should never be able to set this property, so its access modifier must be more restrictive.
-            protected set
+            protected internal set
             {
                 if (value == this.mValue)
                 {

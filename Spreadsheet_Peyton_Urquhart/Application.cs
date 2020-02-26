@@ -14,6 +14,7 @@ namespace Spreadsheet_Peyton_Urquhart
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using CptS321;
 
     /// <summary>
     /// Class to hold the event handlers for the spreadsheet application.
