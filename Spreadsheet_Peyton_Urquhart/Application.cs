@@ -31,8 +31,7 @@ namespace Spreadsheet_Peyton_Urquhart
             // Add 26 columns labeled A-Z
             for (int i = 65; i < (65 + 26); i++)
             {
-                char a = (char)i;
-                this.gridMain.Columns.Add(a.ToString(), a.ToString());
+                this.gridMain.Columns.Add(((char)i).ToString(), ((char)i).ToString());
             }
 
             // Add 50 rows labeled 1 - 50
