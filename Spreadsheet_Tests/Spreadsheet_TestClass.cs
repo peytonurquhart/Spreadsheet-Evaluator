@@ -46,13 +46,13 @@ namespace Spreadsheet_Tests
             {
                 for (int j = 0; j < this.numColumns; j++)
                 {
-                    this.matrix[i, j] = new BasicCell(i, ((char)(j + 65)).ToString());
+                    this.matrix[i, j] = new BasicCell(i, j);
                 }
             }
 
-            Assert.AreEqual("A", this.matrix[49, 0].ColumnIndex);
-            Assert.AreEqual("Z", this.matrix[49, 25].ColumnIndex);
-            Assert.AreEqual("Z", this.matrix[48, 25].ColumnIndex);
+            Assert.AreEqual(0, this.matrix[49, 0].ColumnIndex);
+            Assert.AreEqual(25, this.matrix[49, 25].ColumnIndex);
+            Assert.AreEqual(25, this.matrix[48, 25].ColumnIndex);
 
             Assert.AreEqual(49, this.matrix[49, 20].RowIndex);
             Assert.AreEqual(48, this.matrix[48, 20].RowIndex);
@@ -95,15 +95,15 @@ namespace Spreadsheet_Tests
             this.ConstructorTest();
 
             // Get a valid cell
-            Cell c = this.GetCell(0, "A");
+            Cell c = this.GetCell(0, 0);
 
             // Ensure its the correct cell
-            Assert.AreEqual("A", c.ColumnIndex);
+            Assert.AreEqual(0, c.ColumnIndex);
             Assert.AreEqual(0, c.RowIndex);
 
-            Cell c1 = this.GetCell(49, "Z");
+            Cell c1 = this.GetCell(49, 25);
 
-            Assert.AreEqual("Z", c1.ColumnIndex);
+            Assert.AreEqual(25, c1.ColumnIndex);
             Assert.AreEqual(49, c1.RowIndex);
         }
 
@@ -116,7 +116,7 @@ namespace Spreadsheet_Tests
             this.ConstructorTest();
 
             // Get an invalid cell
-            Cell c = this.GetCell(0, "AA");
+            Cell c = this.GetCell(0, -1);
 
             // Ensure null is returned
             Assert.Null(c);
@@ -131,7 +131,7 @@ namespace Spreadsheet_Tests
             this.ConstructorTest();
 
             // Get an invalid cell
-            Cell c = this.GetCell(50, "Z");
+            Cell c = this.GetCell(50, 20);
 
             // Ensure its null
             Assert.Null(c);
@@ -149,24 +149,17 @@ namespace Spreadsheet_Tests
         /// <returns>
         /// Returns a cell at the given row and column indeces if that cell exits, otherwise returns null;
         /// </returns>
-        public Cell GetCell(int rowIndex, string columnIndex)
+        public Cell GetCell(int rowIndex, int columnIndex)
         {
-            // Ensure that the columnindex is one letter for now
-            if (columnIndex.Length == 1)
-            {
-                if (rowIndex >= 0 && rowIndex < this.numRows)
+             if (rowIndex >= 0 && rowIndex < this.numRows)
+             {
+                if (columnIndex >= 0 && columnIndex < this.numColumns)
                 {
-                    // Create numerial column index
-                    int cI = ((int)((char)columnIndex[0])) - 65;
-
-                    if (cI >= 0 && cI < this.numColumns)
-                    {
-                        return this.matrix[rowIndex, cI];
-                    }
+                        return this.matrix[rowIndex, columnIndex];
                 }
             }
 
-            return null;
+             return null;
         }
 
         /// <summary>

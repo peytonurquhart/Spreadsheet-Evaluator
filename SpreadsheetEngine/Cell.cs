@@ -35,7 +35,7 @@ namespace CptS321
         /// <summary>
         /// Represents the columnIndex for the cell.
         /// </summary>
-        private string columnIndex = null;
+        private int columnIndex = -1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
@@ -46,7 +46,7 @@ namespace CptS321
         /// <param name="rowIndex">
         /// The row index for the cell. Read only.
         /// </param>
-        public Cell(int rowIndex, string columnIndex)
+        public Cell(int rowIndex, int columnIndex)
         {
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
@@ -71,7 +71,7 @@ namespace CptS321
         /// <summary>
         /// Gets columnIndex member.
         /// </summary>
-        public string ColumnIndex
+        public int ColumnIndex
         {
             get
             {

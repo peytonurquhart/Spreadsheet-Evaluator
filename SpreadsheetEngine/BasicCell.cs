@@ -26,7 +26,7 @@ namespace CptS321
         /// <param name="rowIndex">
         /// The row index for the cell. Read only.
         /// </param>
-        public BasicCell(int rowIndex, string columnIndex)
+        public BasicCell(int rowIndex, int columnIndex)
             : base(rowIndex, columnIndex)
         {
             return;
