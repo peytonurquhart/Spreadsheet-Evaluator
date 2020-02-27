@@ -163,6 +163,30 @@ namespace Spreadsheet_Tests
         }
 
         /// <summary>
+        /// Test method for getting cell from cell reference string.
+        /// </summary>
+        [Test]
+        public void GetCellFromRef_Test()
+        {
+            this.ConstructorTest();
+
+            int r = 0;
+
+            int c = 0;
+
+            Assert.True(this.GetCellIndexFromCellReference("=Z49", out r, out c));
+
+            Assert.AreEqual(25, c);
+
+            Assert.AreEqual(48, r);
+
+            // cell Z0 should not be valid because the user interface starts at index 1
+            Assert.False(this.GetCellIndexFromCellReference("=Z0", out r, out c));
+
+            Assert.True(this.GetCellIndexFromCellReference("=R50", out r, out c));
+        }
+
+        /// <summary>
         /// Event handler for when any cells property is changed, also calls an overarching propertychanged event to notify that the spreadsheet has changed.
         /// </summary>
         private void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -174,6 +198,51 @@ namespace Spreadsheet_Tests
 
                 this.eventFlag = true;
             }
+        }
+
+        /// <summary>
+        /// Returns true if given a valid index for the spreadsheet, else false.
+        /// </summary>
+        private bool IsValidIndex(int r, int c)
+        {
+            if (r >= 0 && r < this.numRows)
+            {
+                if (c >= 0 && c < this.numColumns)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values.
+        /// String should be of type =A1. Where A is the column and 1 is the row.
+        /// </summary>
+        private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
+        {
+            // row should be a single letter at the first index (cast to its integer index counterpart)
+            col = (int)((char)cellRef[1]) - 65;
+
+            string rowBuilder = null;
+
+            // column number should start at index 2 to index[strlen - 1]
+            for (int i = 2; i < cellRef.Length; i++)
+            {
+                rowBuilder += cellRef[i];
+            }
+
+            // parse the column number to an int
+            row = int.Parse(rowBuilder) - 1;
+
+            // if we get a valid matrix index return true
+            if (this.IsValidIndex(row, col))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

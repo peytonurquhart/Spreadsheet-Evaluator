@@ -38,29 +38,34 @@ namespace CptS321
         /// </param>
         public Spreadsheet(int numRows, int numColumns, CellType c)
         {
-            if (c == CellType.Basic)
+            // Ensure numRows and numColumns are valid values.
+            if (numRows > 0 && numColumns > 0)
             {
-                this.numRows = numRows;
-                this.numColumns = numColumns;
-
-                // Create a matrix with the specified amount of rows and columns
-                this.matrix = new BasicCell[this.numRows, this.numColumns];
-
-                // Initialize the rows and columns for each cell
-                for (int i = 0; i < this.numRows; i++)
+                // For the basic cell type
+                if (c == CellType.Basic)
                 {
-                    for (int j = 0; j < this.numColumns; j++)
+                    this.numRows = numRows;
+                    this.numColumns = numColumns;
+
+                    // Create a matrix with the specified amount of rows and columns
+                    this.matrix = new BasicCell[this.numRows, this.numColumns];
+
+                    // Initialize the rows and columns for each cell
+                    for (int i = 0; i < this.numRows; i++)
                     {
-                        this.matrix[i, j] = new BasicCell(i, j);
+                        for (int j = 0; j < this.numColumns; j++)
+                        {
+                            this.matrix[i, j] = new BasicCell(i, j);
+                        }
                     }
-                }
 
-                // Subscribe to each cells PropertyChangedEvent
-                for (int i = 0; i < this.numRows; i++)
-                {
-                    for (int j = 0; j < this.numColumns; j++)
+                    // Subscribe to each cells PropertyChangedEvent
+                    for (int i = 0; i < this.numRows; i++)
                     {
-                        this.matrix[i, j].PropertyChanged += this.CellPropertyChanged;
+                        for (int j = 0; j < this.numColumns; j++)
+                        {
+                            this.matrix[i, j].PropertyChanged += this.CellPropertyChanged;
+                        }
                     }
                 }
             }
@@ -83,7 +88,7 @@ namespace CptS321
         }
 
         /// <summary>
-        /// Gets the number of rows in the spreadsheet
+        /// Gets the number of rows in the spreadsheet.
         /// </summary>
         public int RowCount
         {
@@ -94,7 +99,7 @@ namespace CptS321
         }
 
         /// <summary>
-        /// Gets the number of columns in the spreadsheet
+        /// Gets the number of columns in the spreadsheet.
         /// </summary>
         public int ColumnCount
         {
@@ -118,15 +123,57 @@ namespace CptS321
         /// </returns>
         public Cell GetCell(int rowIndex, int columnIndex)
         {
-            if (rowIndex >= 0 && rowIndex < this.numRows)
+            if (this.IsValidIndex(rowIndex, columnIndex))
             {
-                if (columnIndex >= 0 && columnIndex < this.numColumns)
-                {
-                    return this.matrix[rowIndex, columnIndex];
-                }
+                return this.matrix[rowIndex, columnIndex];
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Returns true if given a valid index for the spreadsheet, else false.
+        /// </summary>
+        private bool IsValidIndex(int r, int c)
+        {
+            if (r >= 0 && r < this.numRows)
+            {
+                if (c >= 0 && c < this.numColumns)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values.
+        /// String should be of type =A1. Where A is the column and 1 is the row.
+        /// </summary>
+        private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
+        {
+            // row should be a single letter at the first index (cast to its integer index counterpart)
+            col = (int)((char)cellRef[1]) - 65;
+
+            string rowBuilder = null;
+
+            // column number should start at index 2 to index[strlen - 1]
+            for (int i = 2; i < cellRef.Length; i++)
+            {
+                rowBuilder += cellRef[i];
+            }
+
+            // parse the column number to an int
+            row = int.Parse(rowBuilder) - 1;
+
+            // if we get a valid matrix index return true
+            if (this.IsValidIndex(row, col))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -137,6 +184,31 @@ namespace CptS321
             // If the cells text has changed then notify that a cell has changed
             if (e.PropertyName == "Text")
             {
+                Cell c = (Cell)sender;
+
+                string t = c.Text;
+
+                // If it is not a cell referecne
+                if ((char)t[0] != '=')
+                {
+                    c.Value = t;
+                }
+                else
+                {
+                    int row = 0;
+
+                    int col = 0;
+
+                    if (this.GetCellIndexFromCellReference(t, out row, out col))
+                    {
+                        c.Text = this.matrix[row, col].Text;
+                    }
+                    else
+                    {
+                        c.Text = "Invalid Cell";
+                    }
+                }
+
                 this.PropertyChanged(this, new PropertyChangedEventArgs("Cell"));
             }
         }
