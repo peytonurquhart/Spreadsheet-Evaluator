@@ -147,7 +147,7 @@ namespace Spreadsheet_Tests
         /// The desired column index for the return cell.
         /// </param>
         /// <returns>
-        /// Returns a cell at the given row and column indeces if that cell exits, otherwise returns null;
+        /// Returns a cell at the given row and column indeces if that cell exits, otherwise returns null.
         /// </returns>
         public Cell GetCell(int rowIndex, int columnIndex)
         {

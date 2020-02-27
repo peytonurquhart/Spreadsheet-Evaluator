@@ -20,12 +20,12 @@ namespace CptS321
         /// <summary>
         /// Represents the text inside the cell.
         /// </summary>
-        protected string mText = null;
+        protected string mText = string.Empty;
 
         /// <summary>
         /// Represents the value of the cell. Is equal to 'Text' if the text does not start with the = character.
         /// </summary>
-        protected string mValue = null;
+        protected string mValue = string.Empty;
 
         /// <summary>
         /// Represents the rowIndex for the cell.
@@ -98,6 +98,7 @@ namespace CptS321
 
                 this.mText = value;
 
+                // The cells text has changed, so notify all subscribers
                 this.PropertyChanged(this, new PropertyChangedEventArgs("Text"));
             }
         }

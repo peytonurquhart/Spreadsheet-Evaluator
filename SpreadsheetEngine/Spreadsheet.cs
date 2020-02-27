@@ -119,10 +119,11 @@ namespace CptS321
         /// The desired column index for the return cell.
         /// </param>
         /// <returns>
-        /// Returns a cell at the given row and column indeces if that cell exits, otherwise returns null;
+        /// Returns a cell at the given row and column indeces if that cell exits, otherwise returns null.
         /// </returns>
         public Cell GetCell(int rowIndex, int columnIndex)
         {
+            // Ensure the given index is valid, and if so return the cell at that index
             if (this.IsValidIndex(rowIndex, columnIndex))
             {
                 return this.matrix[rowIndex, columnIndex];
@@ -136,6 +137,7 @@ namespace CptS321
         /// </summary>
         private bool IsValidIndex(int r, int c)
         {
+            // Return true if the given index is valid for the spreadsheet
             if (r >= 0 && r < this.numRows)
             {
                 if (c >= 0 && c < this.numColumns)
@@ -148,7 +150,7 @@ namespace CptS321
         }
 
         /// <summary>
-        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values.
+        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values for now.
         /// String should be of type =A1. Where A is the column and 1 is the row.
         /// </summary>
         private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
@@ -164,8 +166,15 @@ namespace CptS321
                 rowBuilder += cellRef[i];
             }
 
-            // parse the column number to an int
-            row = int.Parse(rowBuilder) - 1;
+            // if the parse fails
+            if (!int.TryParse(rowBuilder, out row))
+            {
+                return false;
+            }
+            else
+            {
+                row -= 1;
+            }
 
             // if we get a valid matrix index return true
             if (this.IsValidIndex(row, col))
@@ -179,6 +188,12 @@ namespace CptS321
         /// <summary>
         /// Event handler for when any cells property is changed, also calls an overarching propertychanged event to notify that the spreadsheet has changed.
         /// </summary>
+        /// <param name="sender">
+        /// Objects whoms property changed.
+        /// </param>
+        /// <param name="e">
+        /// Arguments from the changed object.
+        /// </param>
         private void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // If the cells text has changed then notify that a cell has changed
@@ -188,28 +203,30 @@ namespace CptS321
 
                 string t = c.Text;
 
-                // If it is not a cell referecne
-                if ((char)t[0] != '=')
-                {
-                    c.Value = t;
-                }
-                else
+                // If it is a cell referecne
+                if ((char)t[0] == '=')
                 {
                     int row = 0;
 
                     int col = 0;
 
+                    // Note we are changing the cells text which will call CellPropertyChanged again, then its final value will finally be updated.
                     if (this.GetCellIndexFromCellReference(t, out row, out col))
                     {
                         c.Text = this.matrix[row, col].Text;
                     }
                     else
                     {
-                        c.Text = "Invalid Cell";
+                        c.Text = "Invalid Syntax";
                     }
                 }
+                else
+                {
+                    c.Value = t;
 
-                this.PropertyChanged(this, new PropertyChangedEventArgs("Cell"));
+                    // We have updated a cells value, so we will send the cell with tag "Value".
+                    this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+                }
             }
         }
     }

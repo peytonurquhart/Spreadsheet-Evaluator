@@ -21,6 +21,8 @@ namespace Spreadsheet_Peyton_Urquhart
     /// </summary>
     public partial class Application : Form
     {
+        private Spreadsheet mainSpreadsheet = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Application"/> class.
         /// Creates 26 columns (A - Z) and 50 rows (1 - 50).
@@ -40,6 +42,73 @@ namespace Spreadsheet_Peyton_Urquhart
             {
                 this.gridMain.Rows.Add();
                 this.gridMain.Rows[i - 1].HeaderCell.Value = i.ToString();
+            }
+
+            // Initialize a spreadsheet engine object with 50 rows and 26 columns and the Basic cell type
+            this.mainSpreadsheet = new Spreadsheet(50, 26, Spreadsheet.CellType.Basic);
+
+            // Subscribe to the spreadsheets propertychanged event
+            this.mainSpreadsheet.PropertyChanged += this.SpreadsheetPropertyChanged;
+        }
+
+        /// <summary>
+        /// When a cell in the spreadsheet changes value, the cell that changed is passed through as the sender. e will be "Value".
+        /// The value of the UI will be updated.
+        /// </summary>
+        private void SpreadsheetPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value")
+            {
+                Cell c = (Cell)sender;
+
+                // Update the corresponding UI cell to match the value in the Engine.
+                this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
+            }
+        }
+
+        /// <summary>
+        /// Runs a quick demo of the UI updating based on the spreadsheet engine.
+        /// </summary>
+        private void DemoButton_Click(object sender, EventArgs e)
+        {
+            var rand = new Random();
+
+            // Set 100 random cells to "Hello world!"
+            for (int i = 0; i < 100; i++)
+            {
+                // Get two random column and row indeces
+                int c = rand.Next() % 26;
+                int r = rand.Next() % 50;
+
+                // Get a cell with the random indeces
+                Cell cell = this.mainSpreadsheet.GetCell(r, c);
+
+                // Set the cells text
+                cell.Text = "hello world!";
+            }
+
+            // Label all the B cells with text
+            for (int i = 0; i < 50; i++)
+            {
+                Cell cell = this.mainSpreadsheet.GetCell(i, 1);
+
+                string message = "This is B";
+
+                message += (i + 1).ToString();
+
+                cell.Text = message;
+            }
+
+            // Put a reference to all the B cells in the corresponding A cells
+            for (int i = 0; i < 50; i++)
+            {
+                Cell cell = this.mainSpreadsheet.GetCell(i, 0);
+
+                string message = "=B";
+
+                message += (i + 1).ToString();
+
+                cell.Text = message;
             }
         }
     }
