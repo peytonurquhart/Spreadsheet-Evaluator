@@ -217,7 +217,7 @@ namespace CptS321
                     }
                     else
                     {
-                        c.Text = "Invalid Syntax";
+                        c.Text = "Invalid Cell";
                     }
                 }
                 else

@@ -42,6 +42,11 @@
   <ItemGroup>
     <Compile Include="BasicCell.cs" />
     <Compile Include="Cell.cs" />
+    <Compile Include="EConstantNode.cs" />
+    <Compile Include="ENode.cs" />
+    <Compile Include="EOperatorNode.cs" />
+    <Compile Include="EVariableNode.cs" />
+    <Compile Include="ExpressionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spreadsheet.cs" />
   </ItemGroup>
