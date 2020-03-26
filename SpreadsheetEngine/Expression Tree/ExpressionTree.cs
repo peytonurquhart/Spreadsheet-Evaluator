@@ -109,9 +109,7 @@ namespace CptS321
                 // If the symbol is an operator create a tree with its operands and push it back to the stack.
                 if (this.IsOp(symbol))
                 {
-                    t = new EOperatorNode(symbol) as EOperatorNode;
-
-                    EOperatorNode o = t as EOperatorNode;
+                    EOperatorNode o = OperatorNodeFactory.CreateOperatorNode(symbol);
 
                     o.Right = stack.Pop();
 
@@ -189,8 +187,6 @@ namespace CptS321
                 char symbol = s[i];
 
                 /*
-                 Next 45 lines:
-
                  If the symbol is a left parenthesis push to the stack,
                  If the symbol is a right parenthesis build the string from the current stack until we hit a left parenthesis
                  If the symbol is an operator:
