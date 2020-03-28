@@ -66,6 +66,29 @@ namespace Spreadsheet_Peyton_Urquhart
             }
         }
 
+        // Updates a cell to display its text property as opposed to its value when the user begins editing it.
+        private void GridMain_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            // Get the appropriate engine cell from the spreadsheet.
+            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+
+            // Make sure the spreadsheet shows the engine cells text property when editing.
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Text;
+        }
+
+        // Retruns a cell to displaying its value property when the user stops editing it.
+        private void GridMain_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            // Get the cell that the user is done editing.
+            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+
+            // Set the cells text property to the new text the user entered (if its a reference or formula it will automatically update)
+            c.Text = (string)this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value;
+
+            // Now that the new cells value is updated update the ui again.
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
+        }
+
         /// <summary>
         /// Runs a quick demo of the UI updating based on the spreadsheet engine.
         /// </summary>
@@ -110,22 +133,6 @@ namespace Spreadsheet_Peyton_Urquhart
 
                 cell.Text = message;
             }
-        }
-
-        // Updates a cell to display its text property as opposed to its value when the user begins editing it.
-        private void GridMain_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-        {
-            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
-
-            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Text;
-        }
-
-        // Retruns a cell to displaying its value property when the user stops editing it.
-        private void GridMain_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
-
-            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
         }
     }
 }

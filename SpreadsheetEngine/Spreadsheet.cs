@@ -185,6 +185,17 @@ namespace CptS321
             return false;
         }
 
+        // Returns true if the given cell text is a reference or formula.
+        private bool IsReferenceOrFormula(string cellText)
+        {
+            if (cellText[0] == '=')
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Event handler for when any cells property is changed, also calls an overarching propertychanged event to notify that the spreadsheet has changed.
         /// </summary>
@@ -201,35 +212,39 @@ namespace CptS321
             {
                 Cell c = (Cell)sender;
 
-                string t = c.Text;
-
                 // If it is a cell referecne
-                if ((char)t[0] == '=')
+                if (this.IsReferenceOrFormula(c.Text))
                 {
-                    int row = 0;
-
-                    int col = 0;
-
-                    // Note we are changing the cells text which will call CellPropertyChanged again, then its final value will finally be updated.
-                    if (this.GetCellIndexFromCellReference(t, out row, out col))
-                    {
-                        c.Value = this.matrix[row, col].Value;
-
-                        // We now update the cells value to match that of the cell it references. Note that its text should still be =[Cell].
-                        this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
-                    }
-                    else
-                    {
-                        c.Text = "Invalid Cell";
-                    }
+                    this.UpdateNewReferenceOrFormula(c);
                 }
                 else
                 {
-                    c.Value = t;
+                    c.Value = c.Text;
 
                     // We have updated a cells value, so we will send the cell with tag "Value".
                     this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
                 }
+            }
+        }
+
+        // If a cells text has changed and the new text is a reference of formula, this method is called. The cells value will be changed appropriatly.
+        private void UpdateNewReferenceOrFormula(Cell c)
+        {
+            int row = 0;
+
+            int col = 0;
+
+            // Note we are changing the cells text which will call CellPropertyChanged again, then its final value will finally be updated.
+            if (this.GetCellIndexFromCellReference(c.Text, out row, out col))
+            {
+                c.Value = this.matrix[row, col].Value;
+
+                // We now update the cells value to match that of the cell it references. Note that its text should still be =[Cell].
+                this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+            }
+            else
+            {
+                c.Text = "Invalid Cell";
             }
         }
     }
