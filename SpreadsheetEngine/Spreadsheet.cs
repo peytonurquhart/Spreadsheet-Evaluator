@@ -213,7 +213,10 @@ namespace CptS321
                     // Note we are changing the cells text which will call CellPropertyChanged again, then its final value will finally be updated.
                     if (this.GetCellIndexFromCellReference(t, out row, out col))
                     {
-                        c.Text = this.matrix[row, col].Text;
+                        c.Value = this.matrix[row, col].Value;
+
+                        // We now update the cells value to match that of the cell it references. Note that its text should still be =[Cell].
+                        this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
                     }
                     else
                     {

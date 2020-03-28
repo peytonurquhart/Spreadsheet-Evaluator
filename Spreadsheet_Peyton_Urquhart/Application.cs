@@ -111,5 +111,21 @@ namespace Spreadsheet_Peyton_Urquhart
                 cell.Text = message;
             }
         }
+
+        // Updates a cell to display its text property as opposed to its value when the user begins editing it.
+        private void GridMain_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Text;
+        }
+
+        // Retruns a cell to displaying its value property when the user stops editing it.
+        private void GridMain_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
+        }
     }
 }

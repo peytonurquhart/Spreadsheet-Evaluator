@@ -46,6 +46,8 @@
             this.gridMain.RowTemplate.Height = 33;
             this.gridMain.Size = new System.Drawing.Size(1415, 787);
             this.gridMain.TabIndex = 0;
+            this.gridMain.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.GridMain_CellBeginEdit);
+            this.gridMain.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridMain_CellEndEdit);
             // 
             // DemoButton
             // 
