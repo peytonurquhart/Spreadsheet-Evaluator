@@ -215,6 +215,9 @@ namespace CptS321
             {
                 Cell c = (Cell)sender;
 
+                // Clear all the cells references before updating to avoid floating references.
+                c.ClearReferences();
+
                 // If it is a cell referecne
                 if (this.IsReferenceOrFormula(c.Text))
                 {
@@ -226,6 +229,25 @@ namespace CptS321
 
                     // We have updated a cells value, so we will send the cell with tag "Value".
                     this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+                }
+            }
+
+            // Here we must re-evaluate any formula because a referenced cell of the sender has changed.
+            if (e.PropertyName == "Reference")
+            {
+                Cell c = (Cell)sender;
+
+                // Clear all the cells references before updating to avoid floating references.
+                c.ClearReferences();
+
+                // (This should always be true)
+                if (this.IsReferenceOrFormula(c.Text))
+                {
+                    this.UpdateNewReferenceOrFormula(c);
+                }
+                else
+                {
+                    throw new Exception("ERROR: Floating reference. Cells reference changed but that reference was no longer in the formula.");
                 }
             }
         }
@@ -275,6 +297,11 @@ namespace CptS321
                     if (this.GetCellIndexFromCellReference(newRef, out row, out col))
                     {
                         double referencedVal = 0;
+
+                        Cell r = this.GetCell(row, col);
+
+                        // Add the new cell to the list of this cells references.
+                        c.AddReference(r);
 
                         // Attempt to parse the referenced cells value to a double, else set the value to 0 by default.
                         if (!double.TryParse(this.matrix[row, col].Value, out referencedVal))

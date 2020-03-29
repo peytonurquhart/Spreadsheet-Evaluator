@@ -42,6 +42,42 @@ namespace Spreadsheet_Tests
             b2.PropertyChanged += subscriber.ReferenceCellPropertyChanged;
             c3.PropertyChanged += subscriber.ReferenceCellPropertyChanged;
 
+            this.eventFlag = false;
+
+            Assert.False(this.eventFlag);
+
+            a1.Text = "newtext";
+
+            Assert.True(this.eventFlag);
+        }
+
+
+        /// <summary>
+        /// Test for a cell subscribing to another cells propertychanged event.
+        /// </summary>
+        [Test]
+        public void CellReferenceList_Test1()
+        {
+            Cell subscriber = new BasicCell(1, 1);
+            Cell a1 = new BasicCell(2, 2);
+            Cell b2 = new BasicCell(3, 3);
+            Cell c3 = new BasicCell(4, 4);
+
+            subscriber.PropertyChanged += this.CellPropertyChanged;
+            a1.PropertyChanged += this.CellPropertyChanged;
+            b2.PropertyChanged += this.CellPropertyChanged;
+            c3.PropertyChanged += this.CellPropertyChanged;
+
+            a1.Text = "cell A1";
+            b2.Text = "cell B2";
+            c3.Text = "cell C3";
+
+            subscriber.AddReference(a1);
+            subscriber.AddReference(b2);
+            subscriber.AddReference(c3);
+
+            this.eventFlag = false;
+
             Assert.False(this.eventFlag);
 
             a1.Text = "newtext";

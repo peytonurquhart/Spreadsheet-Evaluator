@@ -37,6 +37,8 @@ namespace CptS321
         /// </summary>
         private int columnIndex = -1;
 
+        private List<Cell> references = new List<Cell> { };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
         /// </summary>
@@ -145,6 +147,32 @@ namespace CptS321
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs("Reference"));
             }
+        }
+
+        /// <summary>
+        /// Adds a referenced cell to a cells list of references.
+        /// </summary>
+        /// <param name="c">
+        /// A cell to add to the list of cells references.
+        /// </param>
+        public void AddReference(Cell c)
+        {
+            this.references.Add(c);
+
+            c.PropertyChanged += this.ReferenceCellPropertyChanged;
+        }
+
+        /// <summary>
+        /// Removes and unsubscribes all the cells references.
+        /// </summary>
+        public void ClearReferences()
+        {
+            foreach (Cell c in this.references)
+            {
+                c.PropertyChanged -= this.ReferenceCellPropertyChanged;
+            }
+
+            this.references.Clear();
         }
     }
 }
