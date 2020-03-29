@@ -119,7 +119,7 @@ namespace Spreadsheet_Tests
         {
             Spreadsheet s1 = new Spreadsheet(50, 26, Spreadsheet.CellType.Basic);
 
-            if ((int)c >= 65 && (int) c <= 90)
+            if ((int)c >= 65 && (int)c <= 90)
             {
                 return true;
             }

@@ -51,7 +51,6 @@ namespace Spreadsheet_Tests
             Assert.True(this.eventFlag);
         }
 
-
         /// <summary>
         /// Test for a cell subscribing to another cells propertychanged event.
         /// </summary>

@@ -74,7 +74,7 @@ namespace CptS321
         {
             for (int i = 0; i < input.Length; i++)
             {
-                if (!IsOp(input[i]) && !IsUpperCaseLetter(input[i]) && !IsInteger(input[i]) 
+                if (!IsOp(input[i]) && !IsUpperCaseLetter(input[i]) && !IsInteger(input[i])
                     && input[i] != ' ' && input[i] != '.' && input[i] != ')' && input[i] != '(')
                 {
                     return true;
