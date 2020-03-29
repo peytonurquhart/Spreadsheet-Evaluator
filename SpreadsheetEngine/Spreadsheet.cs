@@ -188,9 +188,12 @@ namespace CptS321
         // Returns true if the given cell text is a reference or formula.
         private bool IsReferenceOrFormula(string cellText)
         {
-            if (cellText[0] == '=')
+            if (cellText != null)
             {
-                return true;
+                if (cellText.Length > 0 && cellText[0] == '=')
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -230,22 +233,75 @@ namespace CptS321
         // If a cells text has changed and the new text is a reference of formula, this method is called. The cells value will be changed appropriatly.
         private void UpdateNewReferenceOrFormula(Cell c)
         {
-            int row = 0;
+            string expression = c.Text;
 
-            int col = 0;
+            // Get rid of the = character at the start of the expression.
+            expression = expression.Replace("=", " ");
 
-            // Note we are changing the cells text which will call CellPropertyChanged again, then its final value will finally be updated.
-            if (this.GetCellIndexFromCellReference(c.Text, out row, out col))
+            // If the expression contains prohibited characters automatically reject it.
+            if (ExpressionTreeHelper.ContainsProhibitedCharacters(expression))
             {
-                c.Value = this.matrix[row, col].Value;
+                c.Value = "ERROR";
 
-                // We now update the cells value to match that of the cell it references. Note that its text should still be =[Cell].
                 this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+
+                return;
             }
-            else
+
+            // New expression tree created from the expression
+            ExpressionTree eTree = new ExpressionTree(expression);
+
+            int numVarsFound = 0;
+
+            // Get a list of the variables in the expression.
+            string[] vars = ExpressionTreeHelper.GetSpreadsheetVariablesInExpression(expression, out numVarsFound);
+
+            if (vars != null)
             {
-                c.Text = "Invalid Cell";
+                // Get the value of the cell each variable references and set the value within the tree.
+                for (int i = 0; i < numVarsFound; i++)
+                {
+                    // Get the current variable we must set.
+                    string var = vars[i];
+
+                    // Make the variable a proper cell reference.
+                    string newRef = "=" + var;
+
+                    int row = 0;
+
+                    int col = 0;
+
+                    // Attempt to grab the index of the cell with the given reference.
+                    if (this.GetCellIndexFromCellReference(newRef, out row, out col))
+                    {
+                        double referencedVal = 0;
+
+                        // Attempt to parse the referenced cells value to a double, else set the value to 0 by default.
+                        if (!double.TryParse(this.matrix[row, col].Value, out referencedVal))
+                        {
+                            referencedVal = 0;
+                        }
+
+                        // Set the proper variable in the tree.
+                        eTree.SetVariable(var, referencedVal);
+                    }
+                    else
+                    {
+                        // If we could not grab an index for the reference the expression in invalid.
+                        c.Value = "ERROR";
+
+                        this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+
+                        return;
+                    }
+                }
             }
+
+            // Evaluate the tree and set the sending cells value to the evaluation.
+            c.Value = eTree.Evaluate().ToString();
+
+            // Notify property changed to update the ui.
+            this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
         }
     }
 }
