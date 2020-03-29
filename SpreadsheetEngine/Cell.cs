@@ -124,6 +124,26 @@ namespace CptS321
                 }
 
                 this.mValue = value;
+
+                // Notify all subscibers that the cells value has changed.
+                this.PropertyChanged(this, new PropertyChangedEventArgs("Value"));
+            }
+        }
+
+        /// <summary>
+        /// Method is invoked when a cell which is referenced by this cells property changes (value).
+        /// </summary>
+        /// <param name="sender">
+        /// The referenced cell whos property changed
+        /// </param>
+        /// <param name="e">
+        /// Arguments of the sender.
+        /// </param>
+        public void ReferenceCellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value")
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs("Reference"));
             }
         }
     }

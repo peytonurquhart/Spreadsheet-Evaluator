@@ -7,6 +7,7 @@ namespace Spreadsheet_Tests
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using CptS321;
     using NUnit.Framework;
 
     /// <summary>
@@ -116,6 +117,8 @@ namespace Spreadsheet_Tests
         // Returns true if the input represents an upper case letter.
         private bool IsUpperCaseLetter(char c)
         {
+            Spreadsheet s1 = new Spreadsheet(50, 26, Spreadsheet.CellType.Basic);
+
             if ((int)c >= 65 && (int) c <= 90)
             {
                 return true;
