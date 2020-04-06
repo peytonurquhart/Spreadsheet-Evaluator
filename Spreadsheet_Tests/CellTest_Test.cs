@@ -20,12 +20,12 @@ namespace Spreadsheet_Tests
         /// <summary>
         /// Represents the text inside the cell.
         /// </summary>
-        protected string mText = null;
+        private string mText = null;
 
         /// <summary>
         /// Represents the value of the cell. Is equal to 'Text' if the text does not start with the = character.
         /// </summary>
-        protected string mValue = null;
+        private string mValue = null;
 
         /// <summary>
         /// Represents the rowIndex for the cell.

@@ -16,7 +16,6 @@ namespace CptS321
     /// </summary>
     internal class EOperatorNodePlus : EOperatorNode
     {
-
         /// <summary>
         /// Evaluates the value of the operator regarding its two operands, calles private evaluate(Node) function.
         /// </summary>

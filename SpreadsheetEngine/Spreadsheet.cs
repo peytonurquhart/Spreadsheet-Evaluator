@@ -133,74 +133,7 @@ namespace CptS321
         }
 
         /// <summary>
-        /// Returns true if given a valid index for the spreadsheet, else false.
-        /// </summary>
-        private bool IsValidIndex(int r, int c)
-        {
-            // Return true if the given index is valid for the spreadsheet
-            if (r >= 0 && r < this.numRows)
-            {
-                if (c >= 0 && c < this.numColumns)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values for now.
-        /// String should be of type =A1. Where A is the column and 1 is the row.
-        /// </summary>
-        private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
-        {
-            // row should be a single letter at the first index (cast to its integer index counterpart)
-            col = (int)((char)cellRef[1]) - 65;
-
-            string rowBuilder = null;
-
-            // column number should start at index 2 to index[strlen - 1]
-            for (int i = 2; i < cellRef.Length; i++)
-            {
-                rowBuilder += cellRef[i];
-            }
-
-            // if the parse fails
-            if (!int.TryParse(rowBuilder, out row))
-            {
-                return false;
-            }
-            else
-            {
-                row -= 1;
-            }
-
-            // if we get a valid matrix index return true
-            if (this.IsValidIndex(row, col))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        // Returns true if the given cell text is a reference or formula.
-        private bool IsReferenceOrFormula(string cellText)
-        {
-            if (cellText != null)
-            {
-                if (cellText.Length > 0 && cellText[0] == '=')
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Event handler for when any cells property is changed, also calls an overarching propertychanged event to notify that the spreadsheet has changed.
+        /// Event handler for when any cells property is changed. Accepts: { "Text", "Reference", "BGColor" }. Does not handle: { "Value" }.
         /// </summary>
         /// <param name="sender">
         /// Objects whoms property changed.
@@ -210,45 +143,92 @@ namespace CptS321
         /// </param>
         private void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // If the cells text has changed then notify that a cell has changed
-            if (e.PropertyName == "Text")
+            // The sender is always a cell for (CellPropertyChanged).
+            if (sender is Cell)
             {
                 Cell c = (Cell)sender;
 
-                // Clear all the cells references before updating to avoid floating references.
-                c.ClearReferences();
-
-                // If it is a cell referecne
-                if (this.IsReferenceOrFormula(c.Text))
+                // If the cells text has changed then notify that a cell has changed
+                if (e.PropertyName == "Text")
                 {
-                    this.UpdateNewReferenceOrFormula(c);
+                    this.CellTextChanged_Helper(c);
                 }
-                else
-                {
-                    c.Value = c.Text;
 
-                    // We have updated a cells value, so we will send the cell with tag "Value".
-                    this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+                // Here we must re-evaluate any formula because a referenced cell of the sender has changed.
+                if (e.PropertyName == "Reference")
+                {
+                    this.CellReferenceChanged_Helper(c);
+                }
+
+                // If the cells background color has changed we must update the UI.
+                if (e.PropertyName == "BGColor")
+                {
+                    this.CellBGColorChanged_Helper(c);
                 }
             }
-
-            // Here we must re-evaluate any formula because a referenced cell of the sender has changed.
-            if (e.PropertyName == "Reference")
+            else
             {
-                Cell c = (Cell)sender;
+                throw new Exception("ERROR: CellPropertyChanged invoked but the sender was not of type: Cell");
+            }
+        }
 
-                // Clear all the cells references before updating to avoid floating references.
-                c.ClearReferences();
+        /// <summary>
+        /// To be called when the CellPropertyChanged event handler recieves flag "BGColor".
+        /// </summary>
+        /// <param name="c">
+        /// Cell whoms background color changed.
+        /// </param>
+        private void CellBGColorChanged_Helper(Cell c)
+        {
+            // Notify the ui that a cells background has changed, send the cell with the tag "BGColor".
+            this.PropertyChanged(c, new PropertyChangedEventArgs("BGColor"));
+        }
 
-                // (This should always be true)
-                if (this.IsReferenceOrFormula(c.Text))
-                {
-                    this.UpdateNewReferenceOrFormula(c);
-                }
-                else
-                {
-                    throw new Exception("ERROR: Floating reference. Cells reference changed but that reference was no longer in the formula.");
-                }
+        /// <summary>
+        /// To be called when the CellPropertyChanged event handler recieves flag "Reference".
+        /// </summary>
+        /// <param name="c">
+        /// Cell whoms referenced cell changed.
+        /// </param>
+        private void CellReferenceChanged_Helper(Cell c)
+        {
+            // Clear all the cells references before updating to avoid floating references.
+            c.ClearReferences();
+
+            // (This should always be true)
+            if (this.IsReferenceOrFormula(c.Text))
+            {
+                // This function will make appropriate PropertyChanged calls to the UI, and handle errors.
+                this.UpdateNewReferenceOrFormula(c);
+            }
+            else
+            {
+                throw new Exception("ERROR: Floating reference. Cells reference changed but that reference was no longer in the formula.");
+            }
+        }
+
+        /// <summary>
+        /// To be called when the CellPropertyChanged event handler recieves flag "Text".
+        /// </summary>
+        /// <param name="c">
+        /// Cell whoms text changed.
+        /// </param>
+        private void CellTextChanged_Helper(Cell c)
+        {
+            // Clear all the cells references before updating to avoid floating references.
+            c.ClearReferences();
+
+            // If it is a cell referecne
+            if (this.IsReferenceOrFormula(c.Text))
+            {
+                this.UpdateNewReferenceOrFormula(c);
+            }
+            else
+            {
+                c.Value = c.Text;
+
+                // We have updated a cells value, so we will send the cell with tag "Value".
+                this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -314,7 +294,7 @@ namespace CptS321
                     }
                     else
                     {
-                        // If we could not grab an index for the reference the expression in invalid.
+                        // If we could not grab an index for the reference the expression is invalid.
                         c.Value = "ERROR";
 
                         this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
@@ -329,6 +309,73 @@ namespace CptS321
 
             // Notify property changed to update the ui.
             this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+        }
+
+        /// <summary>
+        /// Returns true if given a valid index for the spreadsheet, else false.
+        /// </summary>
+        private bool IsValidIndex(int r, int c)
+        {
+            // Return true if the given index is valid for the spreadsheet
+            if (r >= 0 && r < this.numRows)
+            {
+                if (c >= 0 && c < this.numColumns)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values for now.
+        /// String should be of type =A1. Where A is the column and 1 is the row.
+        /// </summary>
+        private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
+        {
+            // row should be a single letter at the first index (cast to its integer index counterpart)
+            col = (int)((char)cellRef[1]) - 65;
+
+            string rowBuilder = null;
+
+            // column number should start at index 2 to index[strlen - 1]
+            for (int i = 2; i < cellRef.Length; i++)
+            {
+                rowBuilder += cellRef[i];
+            }
+
+            // if the parse fails
+            if (!int.TryParse(rowBuilder, out row))
+            {
+                return false;
+            }
+            else
+            {
+                row -= 1;
+            }
+
+            // if we get a valid matrix index return true
+            if (this.IsValidIndex(row, col))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        // Returns true if the given cell text is a reference or formula.
+        private bool IsReferenceOrFormula(string cellText)
+        {
+            if (cellText != null)
+            {
+                if (cellText.Length > 0 && cellText[0] == '=')
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

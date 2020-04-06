@@ -61,9 +61,40 @@ namespace Spreadsheet_Peyton_Urquhart
             {
                 Cell c = (Cell)sender;
 
-                // Update the corresponding UI cell to match the value in the Engine.
-                this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
+                this.CellValueChanged_Helper(c);
             }
+
+            if (e.PropertyName == "BGColor")
+            {
+                Cell c = (Cell)sender;
+
+                this.CellBGColorChanged_Helper(c);
+            }
+        }
+
+        /// <summary>
+        /// To be called when SpreadSheetPropertyChanged event gets flag "Value".
+        /// </summary>
+        /// <param name="c">
+        /// Cell whoms value changed.
+        /// </param>
+        private void CellValueChanged_Helper(Cell c)
+        {
+            // Update the corresponding UI cell to match the value in the Engine.
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
+        }
+
+        /// <summary>
+        /// To be called when SpreadSheetPropertyChanged event gets flag "BGColor".
+        /// </summary>
+        /// <param name="c">
+        /// Cell whoms background color changed.
+        /// </param>
+        private void CellBGColorChanged_Helper(Cell c)
+        {
+            Color newColor = Color.FromArgb((int)c.BGColor);
+
+            this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Style.BackColor = newColor;
         }
 
         // Updates a cell to display its text property as opposed to its value when the user begins editing it.

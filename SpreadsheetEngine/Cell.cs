@@ -20,12 +20,14 @@ namespace CptS321
         /// <summary>
         /// Represents the text inside the cell.
         /// </summary>
-        protected string mText = string.Empty;
+        private string mText = string.Empty;
 
         /// <summary>
         /// Represents the value of the cell. Is equal to 'Text' if the text does not start with the = character.
         /// </summary>
-        protected string mValue = string.Empty;
+        private string mValue = string.Empty;
+
+        private uint bgColor = 0xFFFFFFFF;
 
         /// <summary>
         /// Represents the rowIndex for the cell.
@@ -85,6 +87,29 @@ namespace CptS321
         }
 
         /// <summary>
+        /// Gets or sets bgColor; The cells background color.
+        /// </summary>
+        public uint BGColor
+        {
+            get
+            {
+                return this.bgColor;
+            }
+
+            set
+            {
+                if (value == this.bgColor)
+                {
+                    return;
+                }
+
+                this.bgColor = value;
+
+                this.PropertyChanged(this, new PropertyChangedEventArgs("BGColor"));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets mText. Notifies the event handler if there is a change.
         /// </summary>
         public string Text
@@ -130,7 +155,7 @@ namespace CptS321
 
                 this.mValue = value;
 
-                // Notify all subscibers that the cells value has changed.
+                // Notify all subscibers that the cells value has changed (this is only for other cells, not for the spreadsheet).
                 this.PropertyChanged(this, new PropertyChangedEventArgs("Value"));
             }
         }
