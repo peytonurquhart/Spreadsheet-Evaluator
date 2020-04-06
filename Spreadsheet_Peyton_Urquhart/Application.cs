@@ -120,50 +120,44 @@ namespace Spreadsheet_Peyton_Urquhart
             this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
         }
 
-        /// <summary>
-        /// Runs a quick demo of the UI updating based on the spreadsheet engine.
-        /// </summary>
-        private void DemoButton_Click(object sender, EventArgs e)
+        // When the user selects Format->Cells->Change Color this method is invoked.
+        private void FormatCellsChangeColor_Click(object sender, EventArgs e)
         {
-            var rand = new Random();
+            Color newColor;
 
-            // Set 100 random cells to "Hello world!"
-            for (int i = 0; i < 100; i++)
+            // If the user selected a new color, update the cells.
+            if (this.GetColorFromDialog(out newColor))
             {
-                // Get two random column and row indeces
-                int c = rand.Next() % 26;
-                int r = rand.Next() % 50;
+                DataGridViewSelectedCellCollection selectedCells = this.gridMain.SelectedCells;
 
-                // Get a cell with the random indeces
-                Cell cell = this.mainSpreadsheet.GetCell(r, c);
+                // For each cell that was selected..
+                for (int i = 0; i < selectedCells.Count; i++)
+                {
+                    // Get the corresponding spreadsheet cell.
+                    Cell c = this.mainSpreadsheet.GetCell(selectedCells[i].RowIndex, selectedCells[i].ColumnIndex);
 
-                // Set the cells text
-                cell.Text = "hello world!";
+                    // Set the cell to the color the user chose
+                    c.BGColor = (uint)newColor.ToArgb();
+                }
+            }
+        }
+
+        // Opens a ColorDialog window, and allows the user to select a new color.
+        private bool GetColorFromDialog(out Color col)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Update the text box color if the user clicks OK 
+            if (colDialog.ShowDialog() == DialogResult.OK)
+            {
+                col = colDialog.Color;
+
+                return true;
             }
 
-            // Label all the B cells with text
-            for (int i = 0; i < 50; i++)
-            {
-                Cell cell = this.mainSpreadsheet.GetCell(i, 1);
+            col = Color.White;
 
-                string message = "This is B";
-
-                message += (i + 1).ToString();
-
-                cell.Text = message;
-            }
-
-            // Put a reference to all the B cells in the corresponding A cells
-            for (int i = 0; i < 50; i++)
-            {
-                Cell cell = this.mainSpreadsheet.GetCell(i, 0);
-
-                string message = "=B";
-
-                message += (i + 1).ToString();
-
-                cell.Text = message;
-            }
+            return false;
         }
     }
 }
