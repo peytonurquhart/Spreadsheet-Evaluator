@@ -37,6 +37,9 @@ namespace CptS321
         /// </summary>
         private int columnIndex = -1;
 
+        /// <summary>
+        /// A list of cells which this cell references in some way (cells which effect this cells formula).
+        /// </summary>
         private List<Cell> references = new List<Cell> { };
 
         /// <summary>
