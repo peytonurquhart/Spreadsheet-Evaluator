@@ -17,6 +17,11 @@ namespace CptS321
     /// </summary>
     public class Spreadsheet : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Cell remote controller.
+        /// </summary>
+        private CellRemote cellRemote = new CellRemote();
+
         private Cell[,] matrix = null;
 
         private int numRows = 0;
@@ -69,6 +74,9 @@ namespace CptS321
                     }
                 }
             }
+
+            // Subscribe to the remotees propertychangedevent.
+            this.cellRemote.PropertyChanged += this.RemotePropertyChanged;
         }
 
         /// <summary>
@@ -85,6 +93,17 @@ namespace CptS321
             /// A basic spreadsheet cell.
             /// </summary>
             Basic,
+        }
+
+        /// <summary>
+        /// Gets the spreadsheets cellRemote.
+        /// </summary>
+        public CellRemote Remote
+        {
+            get
+            {
+                return this.cellRemote;
+            }
         }
 
         /// <summary>
@@ -130,6 +149,12 @@ namespace CptS321
             }
 
             return null;
+        }
+
+        private void RemotePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Notify the UI that the remotes property has changed so it can update accordingly.
+            this.PropertyChanged(sender, e);
         }
 
         /// <summary>

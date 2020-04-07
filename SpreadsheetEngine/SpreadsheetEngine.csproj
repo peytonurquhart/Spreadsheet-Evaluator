@@ -41,6 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicCell.cs" />
+    <Compile Include="Cell Controller\CellChangeBGColorCommand.cs" />
+    <Compile Include="Cell Controller\CellChangeTextCommand.cs" />
+    <Compile Include="Cell Controller\CellRemote.cs" />
+    <Compile Include="Cell Controller\ICommand.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Expression Tree\ENode\EConstantNode.cs" />
     <Compile Include="Expression Tree\ENode\ENode.cs" />
@@ -66,6 +70,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

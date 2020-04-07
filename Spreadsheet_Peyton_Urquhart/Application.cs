@@ -31,6 +31,10 @@ namespace Spreadsheet_Peyton_Urquhart
         {
             this.InitializeComponent();
 
+            // Undo and redo must be disabled to start.
+            this.undoToolStripMenuItem.Enabled = false;
+            this.redoToolStripMenuItem.Enabled = false;
+
             // Add 26 columns labeled A-Z
             for (int i = 65; i < (65 + 26); i++)
             {
@@ -57,18 +61,60 @@ namespace Spreadsheet_Peyton_Urquhart
         /// </summary>
         private void SpreadsheetPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Value")
+            string[] args = e.PropertyName.Split(':');
+
+            if (args[0] == "Value")
             {
                 Cell c = (Cell)sender;
 
                 this.CellValueChanged_Helper(c);
             }
 
-            if (e.PropertyName == "BGColor")
+            if (args[0] == "BGColor")
             {
                 Cell c = (Cell)sender;
 
                 this.CellBGColorChanged_Helper(c);
+            }
+
+            if (args[0] == "UndoStack")
+            {
+                this.UndoStackChanged_Helper(args);
+            }
+
+            if (args[0] == "RedoStack")
+            {
+                this.RedoStackChanged_Helper(args);
+            }
+        }
+
+        private void UndoStackChanged_Helper(string[] args)
+        {
+            if (args[1] == "Populated")
+            {
+                this.undoToolStripMenuItem.Enabled = true;
+                this.undoToolStripMenuItem.Text = "Undo | " + args[2];
+            }
+
+            if (args[1] == "Empty")
+            {
+                this.undoToolStripMenuItem.Enabled = false;
+                this.undoToolStripMenuItem.Name = "Undo";
+            }
+        }
+
+        private void RedoStackChanged_Helper(string[] args)
+        {
+            if (args[1] == "Populated")
+            {
+                this.redoToolStripMenuItem.Enabled = true;
+                this.redoToolStripMenuItem.Text = "Redo | " + args[2];
+            }
+
+            if (args[1] == "Empty")
+            {
+                this.redoToolStripMenuItem.Enabled = false;
+                this.redoToolStripMenuItem.Name = "Redo";
             }
         }
 
@@ -114,7 +160,10 @@ namespace Spreadsheet_Peyton_Urquhart
             Cell c = this.mainSpreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
 
             // Set the cells text property to the new text the user entered (if its a reference or formula it will automatically update)
-            c.Text = (string)this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value;
+            string newText = (string)this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value;
+
+            // Set the cells text through its command object.
+            this.mainSpreadsheet.Remote.ExecuteCommand(new CellChangeTextCommand(c, newText));
 
             // Now that the new cells value is updated update the ui again.
             this.gridMain.Rows[c.RowIndex].Cells[c.ColumnIndex].Value = c.Value;
@@ -136,8 +185,8 @@ namespace Spreadsheet_Peyton_Urquhart
                     // Get the corresponding spreadsheet cell.
                     Cell c = this.mainSpreadsheet.GetCell(selectedCells[i].RowIndex, selectedCells[i].ColumnIndex);
 
-                    // Set the cell to the color the user chose
-                    c.BGColor = (uint)newColor.ToArgb();
+                    // Set the cells color throught the spreadsheets command object.
+                    this.mainSpreadsheet.Remote.ExecuteCommand(new CellChangeBGColorCommand(c, (uint)newColor.ToArgb()));
                 }
             }
         }
@@ -158,6 +207,16 @@ namespace Spreadsheet_Peyton_Urquhart
             col = Color.White;
 
             return false;
+        }
+
+        private void EditUndo_Click(object sender, EventArgs e)
+        {
+            this.mainSpreadsheet.Remote.UndoCommand();
+        }
+
+        private void EditRedo_Click(object sender, EventArgs e)
+        {
+            this.mainSpreadsheet.Remote.RedoCommand();
         }
     }
 }
