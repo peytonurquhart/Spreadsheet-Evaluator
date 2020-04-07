@@ -152,9 +152,6 @@ namespace Spreadsheet_Tests
         /// </summary>
         private class CellChangeTextCommand : ICommand
         {
-            // A user friendly tag to describe what the command does.
-            private string tag = "Change Cell Text";
-
             private Cell cellRef = null;
 
             private string oldText = null;
@@ -184,9 +181,6 @@ namespace Spreadsheet_Tests
         /// </summary>
         private class CellChangeBGColorCommand : ICommand
         {
-            // A user friendly tag to describe what the command does.
-            private string tag = "Change Cell Color";
-
             private Cell cellRef = null;
 
             private uint oldColor;

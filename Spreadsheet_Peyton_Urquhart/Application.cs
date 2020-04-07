@@ -196,7 +196,7 @@ namespace Spreadsheet_Peyton_Urquhart
         {
             ColorDialog colDialog = new ColorDialog();
 
-            // Update the text box color if the user clicks OK 
+            // Update the text box color if the user clicks OK.
             if (colDialog.ShowDialog() == DialogResult.OK)
             {
                 col = colDialog.Color;
