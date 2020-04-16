@@ -50,6 +50,7 @@
     <Compile Include="ColorMethods_TestClass.cs" />
     <Compile Include="ExpressionTreeEvaluator_TestClass.cs" />
     <Compile Include="Spreadsheet_TestClass.cs" />
+    <Compile Include="XML_Reading_TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
