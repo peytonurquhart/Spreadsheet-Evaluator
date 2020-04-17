@@ -1,0 +1,16 @@
+﻿<spreadsheet>
+  <cell name="B1">
+    <bgcolor>blue</bgcolor>
+    <text>cell1</text>
+  </cell>
+  <cell name="B2">
+    <bgcolor>red</bgcolor>
+    <text>cell2</text>
+  </cell>
+  <cell unusedattr="abc" name="B3">
+    <text>cell3</text>
+    <some_tag_you_didnt_write>blah</some_tag_you_didnt_write>
+    <bgcolor>purple</bgcolor>
+    <another_unused_tag>data</another_unused_tag>
+  </cell>
+</spreadsheet>
