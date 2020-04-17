@@ -58,6 +58,7 @@
     <Compile Include="Expression Tree\ExpressionTree.cs" />
     <Compile Include="Expression Tree\ExpressionTreeHelper.cs" />
     <Compile Include="Expression Tree\OperatorNodeFactory.cs" />
+    <Compile Include="File Handler\SpreadsheetFiles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spreadsheet.cs" />
   </ItemGroup>

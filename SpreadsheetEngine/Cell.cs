@@ -161,6 +161,18 @@ namespace CptS321
         }
 
         /// <summary>
+        /// Clears the cell of all its attributes, while keeping its row anc colummn numbers intact in the spreadsheet.
+        /// </summary>
+        public void Clean()
+        {
+            this.Value = string.Empty;
+            this.Text = string.Empty;
+            this.BGColor = 0xFFFFFFFF;
+
+            this.ClearReferences();
+        }
+
+        /// <summary>
         /// Method is invoked when a cell which is referenced by this cells property changes (value).
         /// </summary>
         /// <param name="sender">

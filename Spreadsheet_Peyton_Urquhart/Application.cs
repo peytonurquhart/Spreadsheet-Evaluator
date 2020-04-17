@@ -10,6 +10,7 @@ namespace Spreadsheet_Peyton_Urquhart
     using System.ComponentModel;
     using System.Data;
     using System.Drawing;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -217,6 +218,58 @@ namespace Spreadsheet_Peyton_Urquhart
         private void EditRedo_Click(object sender, EventArgs e)
         {
             this.mainSpreadsheet.Remote.RedoCommand();
+        }
+
+        private void FileLoad_Click(object sender, EventArgs e)
+        {
+            Stream fs = this.LoadXMLFile();
+
+            if (fs != null)
+            {
+                // Clean out the main spreadsheet.
+                this.mainSpreadsheet.Clean();
+
+                // Clear all undo and redo stacks.
+                this.mainSpreadsheet.Remote.Clear();
+
+                // Clear toolstrip item.
+                this.undoToolStripMenuItem.Enabled = false;
+                this.undoToolStripMenuItem.Name = "Undo";
+
+                // Clear toostrip item.
+                this.redoToolStripMenuItem.Enabled = false;
+                this.redoToolStripMenuItem.Name = "Redo";
+
+                // Load the data into the main spreadsheet.
+                SpreadsheetFiles.Load(ref this.mainSpreadsheet, fs);
+            }
+        }
+
+        private Stream LoadXMLFile()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+
+            // Set the filter to only give the option of opening text files
+            fileDialog.Filter = "XML Files (.xml)|*.xml";
+
+            // Dont allow the the user to select multiple files
+            fileDialog.Multiselect = false;
+
+            // Capture the result of the users action in the file explorer
+            DialogResult dialogResult = fileDialog.ShowDialog();
+
+            // If the user ended up selecting a file do the stream operations to the textbox
+            if (dialogResult == DialogResult.OK)
+            {
+                Stream s = fileDialog.OpenFile();
+
+                if (s != null)
+                {
+                    return s;
+                }
+            }
+
+            return null;
         }
     }
 }

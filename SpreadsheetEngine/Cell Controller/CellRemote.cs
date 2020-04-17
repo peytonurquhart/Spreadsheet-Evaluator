@@ -115,5 +115,14 @@ namespace CptS321
                 this.PropertyChanged(this, new PropertyChangedEventArgs("RedoStack:Populated:" + this.redoStack.Peek().GetTag()));
             }
         }
+
+        /// <summary>
+        /// Clears the undo and redo stacks for the program.
+        /// </summary>
+        public void Clear()
+        {
+            this.undoStack.Clear();
+            this.redoStack.Clear();
+        }
     }
 }

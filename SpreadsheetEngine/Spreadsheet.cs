@@ -129,6 +129,20 @@ namespace CptS321
         }
 
         /// <summary>
+        /// Clears the spreadsheet only keeping cell rows and columns intact.
+        /// </summary>
+        public void Clean()
+        {
+            for (int i = 0; i < this.numRows; i++)
+            {
+                for (int j = 0; j < this.numColumns; j++)
+                {
+                    this.matrix[i, j].Clean();
+                }
+            }
+        }
+
+        /// <summary>
         /// Accepts a row and column index and returns the corresponding cell if it exists, otherwise null.
         /// </summary>
         /// <param name="rowIndex">
@@ -149,6 +163,54 @@ namespace CptS321
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values for now.
+        /// String should be of type =A1. Where A is the column and 1 is the row.
+        /// </summary>
+        /// <param name="cellRef">
+        /// String representing a cell reference.
+        /// </param>
+        /// <param name="col">
+        /// Out column number.
+        /// </param>
+        /// <param name="row">
+        /// Out row number.
+        /// </param>
+        /// <returns>
+        /// If the cell grab was successful or not.
+        /// </returns>
+        public bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
+        {
+            // row should be a single letter at the first index (cast to its integer index counterpart)
+            col = (int)((char)cellRef[1]) - 65;
+
+            string rowBuilder = null;
+
+            // column number should start at index 2 to index[strlen - 1]
+            for (int i = 2; i < cellRef.Length; i++)
+            {
+                rowBuilder += cellRef[i];
+            }
+
+            // if the parse fails
+            if (!int.TryParse(rowBuilder, out row))
+            {
+                return false;
+            }
+            else
+            {
+                row -= 1;
+            }
+
+            // if we get a valid matrix index return true
+            if (this.IsValidIndex(row, col))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void RemotePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -348,42 +410,6 @@ namespace CptS321
                 {
                     return true;
                 }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Accepts a possible cell reference string and outputs the index if valid, Only supports one-letter column values for now.
-        /// String should be of type =A1. Where A is the column and 1 is the row.
-        /// </summary>
-        private bool GetCellIndexFromCellReference(string cellRef, out int row, out int col)
-        {
-            // row should be a single letter at the first index (cast to its integer index counterpart)
-            col = (int)((char)cellRef[1]) - 65;
-
-            string rowBuilder = null;
-
-            // column number should start at index 2 to index[strlen - 1]
-            for (int i = 2; i < cellRef.Length; i++)
-            {
-                rowBuilder += cellRef[i];
-            }
-
-            // if the parse fails
-            if (!int.TryParse(rowBuilder, out row))
-            {
-                return false;
-            }
-            else
-            {
-                row -= 1;
-            }
-
-            // if we get a valid matrix index return true
-            if (this.IsValidIndex(row, col))
-            {
-                return true;
             }
 
             return false;
