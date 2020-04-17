@@ -143,6 +143,33 @@ namespace CptS321
         }
 
         /// <summary>
+        /// Gets a list of all cells in the spreadsheet which are non-default.
+        /// </summary>
+        /// <returns>
+        /// A list of populated cells.
+        /// </returns>
+        public List<Cell> GetPopulatedCells()
+        {
+            List<Cell> cl = new List<Cell>();
+
+            for (int i = 0; i < this.numRows; i++)
+            {
+                for (int j = 0; j < this.numColumns; j++)
+                {
+                    Cell c = this.matrix[i, j];
+
+                    // If the cell is somehow populated add it to the list.
+                    if (c.Text != string.Empty || c.BGColor != 0xFFFFFFFF)
+                    {
+                        cl.Add(c);
+                    }
+                }
+            }
+
+            return cl;
+        }
+
+        /// <summary>
         /// Accepts a row and column index and returns the corresponding cell if it exists, otherwise null.
         /// </summary>
         /// <param name="rowIndex">
@@ -211,6 +238,20 @@ namespace CptS321
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Gets a name for a specified cell in the spreadsheet.
+        /// </summary>
+        /// <param name="c">
+        /// A cell in this spreadsheet.
+        /// </param>
+        /// <returns>
+        /// The name for the cell ex: "A1".
+        /// </returns>
+        public string GetCellName(Cell c)
+        {
+            return ((char)(c.ColumnIndex + 65)).ToString() + (c.RowIndex + 1).ToString();
         }
 
         private void RemotePropertyChanged(object sender, PropertyChangedEventArgs e)

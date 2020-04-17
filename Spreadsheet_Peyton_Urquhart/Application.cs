@@ -100,7 +100,7 @@ namespace Spreadsheet_Peyton_Urquhart
             if (args[1] == "Empty")
             {
                 this.undoToolStripMenuItem.Enabled = false;
-                this.undoToolStripMenuItem.Name = "Undo";
+                this.undoToolStripMenuItem.Text = "Undo";
             }
         }
 
@@ -115,7 +115,7 @@ namespace Spreadsheet_Peyton_Urquhart
             if (args[1] == "Empty")
             {
                 this.redoToolStripMenuItem.Enabled = false;
-                this.redoToolStripMenuItem.Name = "Redo";
+                this.redoToolStripMenuItem.Text = "Redo";
             }
         }
 
@@ -192,6 +192,57 @@ namespace Spreadsheet_Peyton_Urquhart
             }
         }
 
+        private void EditUndo_Click(object sender, EventArgs e)
+        {
+            this.mainSpreadsheet.Remote.UndoCommand();
+        }
+
+        private void EditRedo_Click(object sender, EventArgs e)
+        {
+            this.mainSpreadsheet.Remote.RedoCommand();
+        }
+
+        private void FileLoad_Click(object sender, EventArgs e)
+        {
+            Stream fs = this.GetStream_LoadXMLFile();
+
+            if (fs != null)
+            {
+                // Clean out the main spreadsheet.
+                this.mainSpreadsheet.Clean();
+
+                // Load the data into the main spreadsheet.
+                SpreadsheetFiles.Load(ref this.mainSpreadsheet, fs);
+
+                // Clear all undo and redo stacks.
+                this.mainSpreadsheet.Remote.Clear();
+
+                // Clear toolstrip item.
+                this.undoToolStripMenuItem.Text = "Undo";
+                this.undoToolStripMenuItem.Enabled = false;
+
+                // Clear toostrip item.
+                this.redoToolStripMenuItem.Text = "Redo";
+                this.redoToolStripMenuItem.Enabled = false;
+
+                fs.Dispose();
+            }
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get a save file stream.
+            Stream fs = this.GetStream_SaveXMLFile();
+
+            if (fs != null)
+            {
+                // Save the spreadsheet data to the file.
+                SpreadsheetFiles.Save(ref this.mainSpreadsheet, fs);
+
+                fs.Dispose();
+            }
+        }
+
         // Opens a ColorDialog window, and allows the user to select a new color.
         private bool GetColorFromDialog(out Color col)
         {
@@ -210,42 +261,7 @@ namespace Spreadsheet_Peyton_Urquhart
             return false;
         }
 
-        private void EditUndo_Click(object sender, EventArgs e)
-        {
-            this.mainSpreadsheet.Remote.UndoCommand();
-        }
-
-        private void EditRedo_Click(object sender, EventArgs e)
-        {
-            this.mainSpreadsheet.Remote.RedoCommand();
-        }
-
-        private void FileLoad_Click(object sender, EventArgs e)
-        {
-            Stream fs = this.LoadXMLFile();
-
-            if (fs != null)
-            {
-                // Clean out the main spreadsheet.
-                this.mainSpreadsheet.Clean();
-
-                // Clear all undo and redo stacks.
-                this.mainSpreadsheet.Remote.Clear();
-
-                // Clear toolstrip item.
-                this.undoToolStripMenuItem.Enabled = false;
-                this.undoToolStripMenuItem.Name = "Undo";
-
-                // Clear toostrip item.
-                this.redoToolStripMenuItem.Enabled = false;
-                this.redoToolStripMenuItem.Name = "Redo";
-
-                // Load the data into the main spreadsheet.
-                SpreadsheetFiles.Load(ref this.mainSpreadsheet, fs);
-            }
-        }
-
-        private Stream LoadXMLFile()
+        private Stream GetStream_LoadXMLFile()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
 
@@ -254,6 +270,30 @@ namespace Spreadsheet_Peyton_Urquhart
 
             // Dont allow the the user to select multiple files
             fileDialog.Multiselect = false;
+
+            // Capture the result of the users action in the file explorer
+            DialogResult dialogResult = fileDialog.ShowDialog();
+
+            // If the user ended up selecting a file do the stream operations to the textbox
+            if (dialogResult == DialogResult.OK)
+            {
+                Stream s = fileDialog.OpenFile();
+
+                if (s != null)
+                {
+                    return s;
+                }
+            }
+
+            return null;
+        }
+
+        private Stream GetStream_SaveXMLFile()
+        {
+            SaveFileDialog fileDialog = new SaveFileDialog();
+
+            // Set the filter to only give the option of opening text files
+            fileDialog.Filter = "XML Files (.xml)|*.xml";
 
             // Capture the result of the users action in the file explorer
             DialogResult dialogResult = fileDialog.ShowDialog();
