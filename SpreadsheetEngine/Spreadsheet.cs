@@ -198,12 +198,12 @@ namespace CptS321
         /// </summary>
         /// <param name="cellRef">
         /// String representing a cell reference.
+        /// <param name="row">
+        /// Out row number.
+        /// </param>
         /// </param>
         /// <param name="col">
         /// Out column number.
-        /// </param>
-        /// <param name="row">
-        /// Out row number.
         /// </param>
         /// <returns>
         /// If the cell grab was successful or not.
