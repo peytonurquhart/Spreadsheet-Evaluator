@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spreadsheet>
+  <cell name="A1">
+    <bgcolor>blue</bgcolor>
+    <text>this is cell A1</text>
+  </cell>
+  <cell name="A2">
+    <bgcolor>red</bgcolor>
+    <text>this is cell A2</text>
+  </cell>
+</spreadsheet>

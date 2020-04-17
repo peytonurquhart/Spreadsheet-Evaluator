@@ -102,7 +102,7 @@ namespace Spreadsheet_Tests
                         // Here we would get the cell from the spreadsheet based on the name.
                         if (reader.GetAttribute("name") == "B1")
                         {
-                             ctemp = b1;
+                            ctemp = b1;
                         }
                         else if (reader.GetAttribute("name") == "B2")
                         {
