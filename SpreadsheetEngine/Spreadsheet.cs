@@ -440,6 +440,18 @@ namespace CptS321
                         return;
                     }
                 }
+
+                // If a circular reference was created during this update.
+                if (c.CheckCircularReferences())
+                {
+                    c.ClearReferences();
+
+                    c.Value = "!(circular reference)";
+
+                    this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+
+                    return;
+                }
             }
 
             // Evaluate the tree and set the sending cells value to the evaluation.

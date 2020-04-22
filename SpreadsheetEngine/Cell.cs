@@ -214,5 +214,49 @@ namespace CptS321
 
             this.references.Clear();
         }
+
+        /// <summary>
+        /// Retrusn true if the cell belongs to a circular reference chain.
+        /// </summary>
+        /// <returns>
+        /// True if the cell belongs to a circular reference chain, else false.
+        /// </returns>
+        public bool CheckCircularReferences()
+        {
+            return this.CheckCircularReferenceR(this);
+        }
+
+        /// <summary>
+        /// Recursivly identifies a circular reference chain.
+        /// </summary>
+        /// <param name="check">
+        /// A cell to be checked for a circular reference.
+        /// </param>
+        /// <returns>
+        /// True if a circular reference was found, else false.
+        /// </returns>
+        protected bool CheckCircularReferenceR(Cell check)
+        {
+            // Base case, the cell has no references, there are no circular references for this cell.
+            if (this.references.Count == 0)
+            {
+                return false;
+            }
+            else if (this.references.Contains(check))
+            {
+                return true;
+            }
+            else
+            {
+                bool f = false;
+
+                foreach (Cell c in this.references)
+                {
+                    f = c.CheckCircularReferenceR(check);
+                }
+
+                return f;
+            }
+        }
     }
 }

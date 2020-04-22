@@ -78,7 +78,6 @@ namespace Spreadsheet_Tests
 
             // c1 shouldnt have a problem.
             Assert.False(c1.CheckCircularReferences());
-
         }
 
         /// <summary>
