@@ -229,7 +229,7 @@ namespace Spreadsheet_Peyton_Urquhart
             }
         }
 
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void FileSave_Click(object sender, EventArgs e)
         {
             // Get a save file stream.
             Stream fs = this.GetStream_SaveXMLFile();

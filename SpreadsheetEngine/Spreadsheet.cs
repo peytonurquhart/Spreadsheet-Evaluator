@@ -371,7 +371,7 @@ namespace CptS321
             // If the expression contains prohibited characters automatically reject it.
             if (ExpressionTreeHelper.ContainsProhibitedCharacters(expression))
             {
-                c.Value = "ERROR";
+                c.Value = "!(bad reference)";
 
                 this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
 
@@ -423,7 +423,7 @@ namespace CptS321
                     else
                     {
                         // If we could not grab an index for the reference the expression is invalid.
-                        c.Value = "ERROR";
+                        c.Value = "!(out of range)";
 
                         this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
 
