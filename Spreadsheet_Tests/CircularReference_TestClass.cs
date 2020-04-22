@@ -134,6 +134,11 @@ namespace Spreadsheet_Tests
                     foreach (CellTest c in this.references)
                     {
                         f = c.CheckCircularReferenceR(check);
+
+                        if (f == true)
+                        {
+                            return true;
+                        }
                     }
 
                     return f;

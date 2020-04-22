@@ -253,6 +253,11 @@ namespace CptS321
                 foreach (Cell c in this.references)
                 {
                     f = c.CheckCircularReferenceR(check);
+
+                    if (f == true)
+                    {
+                        return true;
+                    }
                 }
 
                 return f;
