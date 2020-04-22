@@ -378,6 +378,16 @@ namespace CptS321
                 return;
             }
 
+            // Handle a self reference. (If the expression contains its own cell name, and its not a bad reference, its a self reference).
+            if (expression.Contains(this.GetCellName(c)))
+            {
+                c.Value = "!(self reference)";
+
+                this.PropertyChanged(c, new PropertyChangedEventArgs("Value"));
+
+                return;
+            }
+
             // New expression tree created from the expression
             ExpressionTree eTree = new ExpressionTree(expression);
 

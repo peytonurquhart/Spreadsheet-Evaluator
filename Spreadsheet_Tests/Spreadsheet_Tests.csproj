@@ -49,6 +49,7 @@
     <Compile Include="CellReferenceEvents_TestClass.cs" />
     <Compile Include="CellTest_Test.cs" />
     <Compile Include="Cell_TestClass.cs" />
+    <Compile Include="CircularReference_TestClass.cs" />
     <Compile Include="ColorMethods_TestClass.cs" />
     <Compile Include="ExpressionTreeEvaluator_TestClass.cs" />
     <Compile Include="Spreadsheet_TestClass.cs" />
