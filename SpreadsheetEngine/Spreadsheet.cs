@@ -1,7 +1,7 @@
 ﻿// <copyright file="Spreadsheet.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// Peyton Urquhart, 11622450
+// Peyton Urquhart, 11622450.
 
 namespace CptS321
 {
